@@ -3,10 +3,6 @@ import Signup from "../models/Signup.js"; // optional: if you want to link payme
 import Payment from "../models/Payment.js"; // create Payment model (below)
 import nodemailer from "nodemailer";
 
-console.log({
-  PAYSTACK_SECRET_KEY: process.env.PAYSTACK_SECRET_KEY,
-  PAYSTACK_PUBLIC_KEY: process.env.PAYSTACK_PUBLIC_KEY,
-});
 // Initialize a transaction
 export const initializePayment = async (req, res) => {
   try {

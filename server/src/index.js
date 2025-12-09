@@ -7,11 +7,6 @@ import paymentsRoutes from "./routes/payments.js";
 
 dotenv.config();
 
-console.log("Loaded ENV:", {
-  PAYSTACK_SECRET_KEY: process.env.PAYSTACK_SECRET_KEY,
-  PAYSTACK_PUBLIC_KEY: process.env.PAYSTACK_PUBLIC_KEY,
-});
-
 const app = express();
 const PORT = process.env.PORT || 5000;
 
