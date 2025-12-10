@@ -3,14 +3,22 @@ import Signup from "../models/Signup.js"; // optional: if you want to link payme
 import Payment from "../models/Payment.js"; // create Payment model (below)
 import nodemailer from "nodemailer";
 
+// --- FIX: Define the keys using process.env ---
+const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY;
+const PAYSTACK_PUBLIC_KEY = process.env.PAYSTACK_PUBLIC_KEY;
+// --- END FIX ---
+
 // Initialize a transaction
 export const initializePayment = async (req, res) => {
   try {
     const { amount, email, metadata = {} } = req.body;
     if (!amount || !email)
-      return res.status(400).json({ message: "Missing amount or email" });
+      return res.status(400).json({ message: "Missing amount or email" }); // Check for secret key before making API call
 
-    // paystack expects amount in kobo (multiply by 100)
+    if (!PAYSTACK_SECRET_KEY) {
+      throw new Error("PAYSTACK_SECRET_KEY is not configured.");
+    } // paystack expects amount in kobo (multiply by 100)
+
     const response = await axios.post(
       "https://api.paystack.co/transaction/initialize",
       {
@@ -20,13 +28,13 @@ export const initializePayment = async (req, res) => {
       },
       {
         headers: {
-          Authorization: `Bearer ${PAYSTACK_SECRET}`,
+          // --- FIX: Use the constant derived from process.env ---
+          Authorization: `Bearer ${PAYSTACK_SECRET_KEY}`,
           "Content-Type": "application/json",
         },
       }
-    );
+    ); // Save initial payment record (optional)
 
-    // Save initial payment record (optional)
     const initData = response.data.data;
     const payment = await Payment.create({
       reference: initData.reference,
@@ -34,13 +42,12 @@ export const initializePayment = async (req, res) => {
       email,
       status: "initialized",
       metadata,
-    });
+    }); // return init data + public key so frontend can open inline
 
-    // return init data + public key so frontend can open inline
     return res.json({
       success: true,
-      ...response.data.data,
-      paystackPublicKey: PAYSTACK_PUBLIC,
+      ...response.data.data, // --- FIX: Use the constant derived from process.env ---
+      paystackPublicKey: PAYSTACK_PUBLIC_KEY,
     });
   } catch (err) {
     console.error("initializePayment error", err.response?.data || err.message);
@@ -56,7 +63,8 @@ export const verifyPayment = async (req, res) => {
       `https://api.paystack.co/transaction/verify/${reference}`,
       {
         headers: {
-          Authorization: `Bearer ${PAYSTACK_SECRET}`,
+          // --- FIX: Use the constant derived from process.env ---
+          Authorization: `Bearer ${PAYSTACK_SECRET_KEY}`,
         },
       }
     );

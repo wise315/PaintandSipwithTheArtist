@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
+// --- FIX 1: Define the API URL using the Vercel ENV variable ---
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+// -----------------------------------------------------------------
+
 /*
 This component:
 - reads the selected table from location.state.table
@@ -20,6 +24,20 @@ export default function Payment() {
     if (!table) navigate("/tables");
   }, [table, navigate]);
 
+  const loadPaystackScript = () =>
+    new Promise((resolve, reject) => {
+      const existing = document.getElementById("paystack-js");
+      if (existing) return resolve();
+      const script = document.createElement("script");
+      script.src = "https://js.paystack.co/v1/inline.js";
+      script.id = "paystack-js";
+      script.async = true;
+      script.onload = () => resolve();
+      script.onerror = () =>
+        reject(new Error("Failed to load Paystack script"));
+      document.body.appendChild(script);
+    });
+
   const handlePay = async (e) => {
     e.preventDefault();
     if (!email) return alert("Please enter your email");
@@ -28,7 +46,8 @@ export default function Payment() {
     try {
       // call backend to initialize
       const initRes = await fetch(
-        "http://localhost:5000/api/payments/initialize",
+        // --- FIX 2: Use the dynamic API_URL constant ---
+        `${API_URL}/api/payments/initialize`, // -----------------------------------------------
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -43,8 +62,7 @@ export default function Payment() {
       if (!initRes.ok)
         throw new Error(initData.message || "Initialization failed");
 
-      const { authorization_url, reference, access_code } = initData; // we'll use reference
-      // open Paystack inline
+      const { authorization_url, reference, access_code } = initData; // we'll use reference // open Paystack inline
       const paystackPublicKey = initData.paystackPublicKey; // backend returns this from env
 
       if (!window.PaystackPop) {
@@ -67,7 +85,8 @@ export default function Payment() {
           // verify on backend
           try {
             const verifyRes = await fetch(
-              `http://localhost:5000/api/payments/verify/${response.reference}`
+              // --- FIX 3: Use the dynamic API_URL constant ---
+              `${API_URL}/api/payments/verify/${response.reference}` // -----------------------------------------------
             );
             const verifyJson = await verifyRes.json();
             if (verifyRes.ok && verifyJson.success) {
@@ -93,35 +112,25 @@ export default function Payment() {
     }
   };
 
-  const loadPaystackScript = () =>
-    new Promise((resolve, reject) => {
-      const existing = document.getElementById("paystack-js");
-      if (existing) return resolve();
-      const script = document.createElement("script");
-      script.src = "https://js.paystack.co/v1/inline.js";
-      script.id = "paystack-js";
-      script.async = true;
-      script.onload = () => resolve();
-      script.onerror = () =>
-        reject(new Error("Failed to load Paystack script"));
-      document.body.appendChild(script);
-    });
-
   if (!table) return null;
 
   return (
     <div className="min-h-screen flex items-center justify-center p-6 bg-gray-50">
+           {" "}
       <div className="max-w-lg w-full bg-white rounded-xl p-6 shadow">
-        <h2 className="text-2xl font-semibold mb-3">Confirm Payment</h2>
+                <h2 className="text-2xl font-semibold mb-3">Confirm Payment</h2>
+               {" "}
         <p className="text-gray-600 mb-4">
-          Table: <strong>{table.name}</strong> — ₦
-          {table.priceNGN.toLocaleString()}
+                    Table: <strong>{table.name}</strong> — ₦          {" "}
+          {table.priceNGN.toLocaleString()}       {" "}
         </p>
-
+               {" "}
         <form onSubmit={handlePay} className="space-y-4">
+                   {" "}
           <label className="block text-sm text-gray-600">
-            Email for confirmation
+                        Email for confirmation          {" "}
           </label>
+                   {" "}
           <input
             className="w-full border p-3 rounded"
             type="email"
@@ -129,18 +138,23 @@ export default function Payment() {
             onChange={(e) => setEmail(e.target.value)}
             required
           />
-
+                   {" "}
           <button
             className="w-full py-3 rounded bg-[#1D3557] text-white font-semibold disabled:opacity-70"
             type="submit"
             disabled={loading}
           >
+                       {" "}
             {loading
               ? "Processing..."
               : `Pay ₦${table.priceNGN.toLocaleString()}`}
+                     {" "}
           </button>
+                 {" "}
         </form>
+             {" "}
       </div>
+         {" "}
     </div>
   );
-}
+} // <--- Added the missing closing brace here!
