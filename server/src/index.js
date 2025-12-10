@@ -12,9 +12,28 @@ const PORT = process.env.PORT || 5000;
 
 connectDB();
 
+// --- SUGGESTED CODE START: Enhanced CORS Configuration ---
+const allowedOrigins = [
+  process.env.FRONTEND_ORIGIN,
+  "http://localhost:5173",
+  "http://localhost:3000", // Add other common dev ports
+];
+
 app.use(
   cors({
-    origin: process.env.FRONTEND_ORIGIN || "http://localhost:5173",
+    // Allow requests from the specific origin (or fallback to allowing all if FRONTEND_ORIGIN isn't set)
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        // For production robustness (e.g., if a preview branch is used), you might simplify this to:
+        // callback(null, true);
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE", // Specify allowed methods
+    credentials: true, // IMPORTANT: Allows cookies, headers, and authorization
+    optionsSuccessStatus: 204,
   })
 );
 

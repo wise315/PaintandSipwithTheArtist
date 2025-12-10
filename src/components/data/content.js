@@ -12,21 +12,63 @@ export const navLinks = [
   { name: "Contact", href: "#contact" },
 ];
 
+// src/components/data/scheduleData.js
+
 export const scheduleData = [
   {
+    time: "1:00 PM",
+    title: "Guests Check-In",
+    desc: "Red carpet arrival, photo sessions, and cultural welcome.",
+  },
+  {
     time: "2:00 PM",
-    title: "Guest Check-in",
-    desc: "Welcomin with photo sessions and cultural dances.",
+    title: "Opening Performance",
+    desc: "Festival opening performance and welcoming by The Artist.",
+  },
+  {
+    time: "2:30 PM",
+    title: "Host/Co-Host Unveil (Rendi)",
+    desc: "Official unveiling and introductions.",
   },
   {
     time: "3:00 PM",
-    title: "The main event",
-    desc: "Live performance by The Artist and other entertainers.",
+    title: "History & Heritage",
+    desc: "Narration on Art, Abia culture, and heritage by Mazi Peterson.",
+  },
+  {
+    time: "4:00 PM",
+    title: "Receiving the NDI EZEs",
+    desc: "Welcoming and honoring the esteemed NDI EZEs.",
+  },
+  {
+    time: "4:30 PM",
+    title: "Ohafia War Dance",
+    desc: "Traditional cultural performance by Ohafia warriors.",
+  },
+  {
+    time: "5:00 PM",
+    title: "Partners & Sponsors",
+    desc: "Introducing official partners and event sponsors.",
   },
   {
     time: "5:30 PM",
-    title: "Live Performance & Networking",
-    desc: "Good Music, Drinks and live performance.",
+    title: "Drama Performance",
+    desc: "Stage performance highlighting culture and storytelling.",
+  },
+  {
+    time: "6:00 PM",
+    title: "Quiz on Culture",
+    desc: "Interactive quiz on Abia culture and history.",
+  },
+  {
+    time: "7:00 PM",
+    title: "Other Performances",
+    desc: "Live cultural music and entertainment acts.",
+  },
+  {
+    time: "8:00 PM",
+    title: "Dance & Vibes",
+    desc: "Enjoy music and vibes with DJ Cue and Chidoski.",
   },
 ];
 
