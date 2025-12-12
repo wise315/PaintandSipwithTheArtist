@@ -16,7 +16,8 @@ import AdminDashboard from "./pages/AdminDashboard";
 import AdminLogin from "./pages/AdminLogin";
 
 import Tables from "./pages/Tables";
-import Payment from "./pages/Payment";
+import PaymentPage from "./pages/PaymentPage";
+//import Payment from "./pages/Payment";
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -35,7 +36,7 @@ function AnimatedRoutes() {
 
         {/*Payment page */}
         <Route path="/tables" element={<Tables />} />
-        <Route path="/pay" element={<Payment />} />
+        <Route path="/pay" element={<PaymentPage />} />
       </Routes>
     </AnimatePresence>
   );

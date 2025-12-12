@@ -16,7 +16,7 @@ connectDB();
 const allowedOrigins = [
   process.env.FRONTEND_ORIGIN,
   "http://localhost:5173",
-  "http://localhost:3000", // Add other common dev ports
+  "http://localhost:5000", // Add other common dev ports
 ];
 
 app.use(
